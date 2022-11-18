@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { useRef } from "react";
+import { useStore, actions } from "./store";
 function App() {
+  const [state, dispatch] = useStore();
+  const { todos, todoInput } = state;
+  const focusInput = useRef();
+  const handleAdd = () => {
+    dispatch(actions.addTodo(todoInput));
+    dispatch(actions.setTodoInput(""));
+    focusInput.current.focus();
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input
+        type="text"
+        ref={focusInput}
+        value={todoInput}
+        placeholde="Enter your job..."
+        onChange={(e) => {
+          return dispatch(actions.setTodoInput(e.target.value));
+        }}
+      />
+      <button onClick={handleAdd}>add</button>
+      <ul>
+        {todos.map((item, index) => {
+          return <li key={index}>{item}</li>;
+        })}
+      </ul>
     </div>
   );
 }
